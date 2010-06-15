@@ -1,17 +1,39 @@
-type Vector = (Double, Double)
-type Vectors = [Vector]
+data Vec = Vec Double Double deriving (Show, Eq)
 
-mul :: Vector -> Double -> Vector
-mul (vx, vy) m = (vx * m, vy * m)
+mul :: Vec -> Double -> Vec
+mul (Vec x y) m = Vec (x * m) (y * m)
 
-div :: Vector -> Double -> Vector
-div (vx, vy) d = (vx / d, vy / d)
+div :: Vec -> Double -> Vec
+div (Vec x y) d = Vec (x / d) (y / d)
 
-add :: Vector -> Vector -> Vector
-add (vx1, vy1) (vx2, vy2) = (vx1 + vx2, vy1 + vy2)
+add :: Vec -> Vec -> Vec
+add (Vec x0 y0) (Vec x1 y1) = Vec (x0 + x1) (y0 + y1)
 
-sub :: Vector -> Vector -> Vector
-sub (vx1, vy1) (vx2, vy2) = (vx1 - vx2, vy1 - vy2)
+sub :: Vec -> Vec -> Vec
+sub (Vec x0 y0) (Vec x1 y1) = Vec (x0 - x1) (y0 - y1)
 
-grid :: Vector -> Vector -> Vectors -> (Vector -> Vector -> Vector -> Vectors)
-grid (x0, y0) (x1, y1) (v:vs)
+grid :: Vec -> Vec -> [Vec] -> (Vec -> Vec -> Vec -> [Vec])
+grid (Vec x0 y0) (Vec x1 y1) (v:vs) = fn
+  where
+    fn (Vec ax ay) (Vec bx by) (Vec cx cy) =
+      undefined
+
+
+
+-- def grid(m, n, s):
+--     """Defines a picture function from lines in a grid, s, bounded by vectors
+--     m and n."""
+--     def _(a, b, c):
+--         return tuple(
+--             (reduce(vadd, (vdiv(vmul(b, x0), m), a, vdiv(vmul(c, y0), n))),
+--              reduce(vadd, (vdiv(vmul(b, x1), m), a, vdiv(vmul(c, y1), n))))
+--             for (x0, y0), (x1, y1) in s)
+--     return _
+
+-- (defun grid (m n s)
+--   "defines a picture from lines in a grid"
+--   (lambda (a b c)
+--     (loop for line in s collect
+--           (destructuring-bind ((x0 y0) (x1 y1)) line
+--             (list (p+ (p/ (p* b x0) m) a (p/ (p* c y0) n))
+--                   (p+ (p/ (p* b x1) m) a (p/ (p* c y1) n)))))))
