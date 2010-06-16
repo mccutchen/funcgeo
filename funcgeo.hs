@@ -154,22 +154,6 @@ corner2 = quartet corner1 side1 (rot side1) u
 pseudocorner = quartet corner2 side2 (rot side2) (rot t)
 fishes = cycle pseudocorner
 
+write p filename = writeFile filename (plot p)
 
-
--- def grid(m, n, s):
---     """Defines a picture function from lines in a grid, s, bounded by vectors
---     m and n."""
---     def _(a, b, c):
---         return tuple(
---             (reduce(vadd, (vdiv(vmul(b, x0), m), a, vdiv(vmul(c, y0), n))),
---              reduce(vadd, (vdiv(vmul(b, x1), m), a, vdiv(vmul(c, y1), n))))
---             for (x0, y0), (x1, y1) in s)
---     return _
-
--- (defun grid (m n s)
---   "defines a picture from lines in a grid"
---   (lambda (a b c)
---     (loop for line in s collect
---           (destructuring-bind ((x0 y0) (x1 y1)) line
---             (list (p+ (p/ (p* b x0) m) a (p/ (p* c y0) n))
---                   (p+ (p/ (p* b x1) m) a (p/ (p* c y1) n)))))))
+main = write fishes "fishes.ps"
