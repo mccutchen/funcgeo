@@ -1,5 +1,6 @@
 import Prelude hiding (div)
-import Data.List (union)
+import Data.List (union, intercalate)
+import Text.Printf (printf)
 
 type Vec = (Double, Double)
 type Pair = (Vec, Vec)
@@ -67,6 +68,19 @@ quartet p1 p2 p3 p4 = above (beside p1 p2) (beside p3 p4)
 
 cycle :: Picture -> Picture
 cycle p = quartet p (rot (rot (rot p))) (rot p) (rot (rot p))
+
+plot :: Picture -> String
+plot p = header ++ "\n" ++ picture ++ "\n" ++ footer
+  where
+    header = intercalate "\n" [
+      "500 500 scale", ".1 .1 translate", "0 setlinewidth",
+      "0 0 moveto 1 0 lineto 1 1 lineto 0 1 lineto 0 0 lineto"]
+    footer = "stroke\nshowpage\n"
+    picture = intercalate "\n" (map pfunc (p (0,0) (1,0) (0,1)))
+      where
+        pfunc :: Pair -> String
+        pfunc ((x0,y0), (x1, y1)) =
+          printf "%f %f moveto %f %f lineto" x0 y0 x1 y1
 
 
 
