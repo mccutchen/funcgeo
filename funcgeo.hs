@@ -9,14 +9,28 @@ div (Vec x y) d = Vec (x / d) (y / d)
 add :: Vec -> Vec -> Vec
 add (Vec x0 y0) (Vec x1 y1) = Vec (x0 + x1) (y0 + y1)
 
+adds :: [Vec] -> Vec
+adds vs = foldl add (Vec 0 0) vs
+
 sub :: Vec -> Vec -> Vec
 sub (Vec x0 y0) (Vec x1 y1) = Vec (x0 - x1) (y0 - y1)
 
-grid :: Vec -> Vec -> [Vec] -> (Vec -> Vec -> Vec -> [Vec])
-grid (Vec x0 y0) (Vec x1 y1) (v:vs) = fn
+subs :: [Vec] -> Vec
+subs vs = foldl sub (Vec 0 0) vs
+
+grid :: Double -> Double -> [Vec] -> (Vec -> Vec -> Vec -> [Vec])
+grid m n vs = f
   where
-    fn (Vec ax ay) (Vec bx by) (Vec cx cy) =
-      undefined
+    f :: Vec -> Vec -> Vec -> [Vec]
+    f a b c =
+      map g vs where
+        g :: Vec -> Vec -> Vec
+        g (Vec x0 y0) (Vec x1 y1) =
+          (Vec
+           (adds (div (mul b x0) m) a (div (mul c y0) n))
+           (adds (div (mul b x1) m) a (div (mul c y1) n)))
+
+
 
 
 
