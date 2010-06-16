@@ -1,4 +1,8 @@
+import Prelude hiding (div)
+
+
 data Vec = Vec Double Double deriving (Show, Eq)
+
 
 mul :: Vec -> Double -> Vec
 mul (Vec x y) m = Vec (x * m) (y * m)
@@ -18,17 +22,16 @@ sub (Vec x0 y0) (Vec x1 y1) = Vec (x0 - x1) (y0 - y1)
 subs :: [Vec] -> Vec
 subs vs = foldl sub (Vec 0 0) vs
 
-grid :: Double -> Double -> [Vec] -> (Vec -> Vec -> Vec -> [Vec])
+grid :: Double -> Double -> [(Vec, Vec)] -> (Vec -> Vec -> Vec -> [(Vec, Vec)])
 grid m n vs = f
   where
-    f :: Vec -> Vec -> Vec -> [Vec]
+    f :: Vec -> Vec -> Vec -> [(Vec, Vec)]
     f a b c =
       map g vs where
-        g :: Vec -> Vec -> Vec
-        g (Vec x0 y0) (Vec x1 y1) =
-          (Vec
-           (adds (div (mul b x0) m) a (div (mul c y0) n))
-           (adds (div (mul b x1) m) a (div (mul c y1) n)))
+        g :: (Vec, Vec) -> (Vec, Vec)
+        g ((Vec x0 y0), (Vec x1 y1)) =
+          ((adds [(div (mul b x0) m), a, (div (mul c y0) n)]),
+           (adds [(div (mul b x1) m), a, (div (mul c y1) n)]))
 
 
 
