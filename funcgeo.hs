@@ -1,4 +1,5 @@
 import Prelude hiding (div)
+import Data.List (union)
 
 type Vec = (Double, Double)
 type Pair = (Vec, Vec)
@@ -35,6 +36,40 @@ grid m n vs = f
 
 polygon :: [Vec] -> [Pair]
 polygon vs = zip (last vs : init vs) vs
+
+blank :: Picture
+blank = \a b c -> []
+
+beside :: Picture -> Picture -> Picture
+beside p q = f
+  where
+    f :: Picture
+    f a b c = union (p a bHalf c) (q (add a bHalf) bHalf c)
+      where
+        bHalf = c `div` 2
+
+above :: Picture -> Picture -> Picture
+above p q = f
+  where
+    f :: Picture
+    f a b c = union (p (add a cHalf) b cHalf) (q a b cHalf)
+      where
+        cHalf = c `div` 2
+
+rot :: Picture -> Picture
+rot p = f
+  where
+    f :: Picture
+    f a b c = p (add a b) c (mul b (-1))
+
+quartet :: Picture -> Picture -> Picture -> Picture -> Picture
+quartet p1 p2 p3 p4 = above (beside p1 p2) (beside p3 p4)
+
+cycle :: Picture -> Picture
+cycle p = quartet p (rot (rot (rot p))) (rot p) (rot (rot p))
+
+
+
 
 man = grid 14 20 (polygon [(6, 10), (0, 10), (0, 12), (6, 12), (6, 14),
                            (4, 16), (4, 18), (6, 20), (8, 20), (10, 18),
