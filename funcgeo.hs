@@ -32,7 +32,14 @@ grid m n vs = f
           ((adds [(div (mul b x0) m), a, (div (mul c y0) n)]),
            (adds [(div (mul b x1) m), a, (div (mul c y1) n)]))
 
+polygon :: [Vec] -> [Pair]
+polygon vs = zip (last vs : init vs) vs
 
+man = grid 14 20 (polygon [(6, 10), (0, 10), (0, 12), (6, 12), (6, 14),
+                           (4, 16), (4, 18), (6, 20), (8, 20), (10, 18),
+                           (10, 16), (8, 14), (8, 12), (10, 12), (10, 14),
+                           (12, 14), (12, 10), (8, 10), (8, 8), (10, 0),
+                           (8, 0), (7, 4), (6, 0), (4, 0), (6, 8)])
 
 
 
