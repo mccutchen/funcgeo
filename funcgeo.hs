@@ -2,6 +2,7 @@ import Prelude hiding (div)
 
 type Vec = (Double, Double)
 type Pair = (Vec, Vec)
+type Picture = Vec -> Vec -> Vec -> [Pair]
 
 mul :: Vec -> Double -> Vec
 mul (x, y) m = (x * m, y * m)
@@ -21,10 +22,10 @@ sub (x0, y0) (x1, y1) = (x0 - x1, y0 - y1)
 subs :: [Vec] -> Vec
 subs vs = foldl sub (0, 0) vs
 
-grid :: Double -> Double -> [Pair] -> (Vec -> Vec -> Vec -> [Pair])
+grid :: Double -> Double -> [Pair] -> Picture
 grid m n vs = f
   where
-    f :: Vec -> Vec -> Vec -> [Pair]
+    f :: Picture
     f a b c =
       map g vs where
         g :: Pair -> Pair
