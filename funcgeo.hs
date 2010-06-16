@@ -1,37 +1,37 @@
 import Prelude hiding (div)
 
-
-data Vec = Vec Double Double deriving (Show, Eq)
-
+type Vec = (Double, Double)
+type Pair = (Vec, Vec)
 
 mul :: Vec -> Double -> Vec
-mul (Vec x y) m = Vec (x * m) (y * m)
+mul (x, y) m = (x * m, y * m)
 
 div :: Vec -> Double -> Vec
-div (Vec x y) d = Vec (x / d) (y / d)
+div (x, y) d = (x / d, y / d)
 
 add :: Vec -> Vec -> Vec
-add (Vec x0 y0) (Vec x1 y1) = Vec (x0 + x1) (y0 + y1)
+add (x0, y0) (x1, y1) = (x0 + x1, y0 + y1)
 
 adds :: [Vec] -> Vec
-adds vs = foldl add (Vec 0 0) vs
+adds vs = foldl add (0, 0) vs
 
 sub :: Vec -> Vec -> Vec
-sub (Vec x0 y0) (Vec x1 y1) = Vec (x0 - x1) (y0 - y1)
+sub (x0, y0) (x1, y1) = (x0 - x1, y0 - y1)
 
 subs :: [Vec] -> Vec
-subs vs = foldl sub (Vec 0 0) vs
+subs vs = foldl sub (0, 0) vs
 
-grid :: Double -> Double -> [(Vec, Vec)] -> (Vec -> Vec -> Vec -> [(Vec, Vec)])
+grid :: Double -> Double -> [Pair] -> (Vec -> Vec -> Vec -> [Pair])
 grid m n vs = f
   where
-    f :: Vec -> Vec -> Vec -> [(Vec, Vec)]
+    f :: Vec -> Vec -> Vec -> [Pair]
     f a b c =
       map g vs where
-        g :: (Vec, Vec) -> (Vec, Vec)
-        g ((Vec x0 y0), (Vec x1 y1)) =
+        g :: Pair -> Pair
+        g ((x0, y0), (x1, y1)) =
           ((adds [(div (mul b x0) m), a, (div (mul c y0) n)]),
            (adds [(div (mul b x1) m), a, (div (mul c y1) n)]))
+
 
 
 
