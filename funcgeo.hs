@@ -2,10 +2,23 @@ import Prelude hiding (div, cycle)
 import Data.List (union, intercalate)
 import Text.Printf (printf)
 
+
+-- A vector is a single point
 type Vec = (Double, Double)
+
+-- A pair of vectors is a line
 type Pair = (Vec, Vec)
+
+-- A picture function takes three vectors: "a" for the offset from bottom
+-- left, and "b" and "c" for the bounding box of the picture.  It returns a
+-- list of vector pairs representing coordinates that can be plotted as
+-- PostScript.
 type Picture = Vec -> Vec -> Vec -> [Pair]
 
+
+-- ---------------------------------------------------------------------------
+-- Basic vector arithmetic
+-- ---------------------------------------------------------------------------
 mul :: Vec -> Double -> Vec
 mul (x, y) m = (x * m, y * m)
 
@@ -15,15 +28,23 @@ div (x, y) d = (x / d, y / d)
 add :: Vec -> Vec -> Vec
 add (x0, y0) (x1, y1) = (x0 + x1, y0 + y1)
 
-adds :: [Vec] -> Vec
-adds vs = foldl add (0, 0) vs
-
 sub :: Vec -> Vec -> Vec
 sub (x0, y0) (x1, y1) = (x0 - x1, y0 - y1)
+
+-- Add and subtract multiple vectors at once
+adds :: [Vec] -> Vec
+adds vs = foldl add (0, 0) vs
 
 subs :: [Vec] -> Vec
 subs vs = foldl sub (0, 0) vs
 
+
+-- ---------------------------------------------------------------------------
+-- Image function building blocks
+-- ---------------------------------------------------------------------------
+
+-- Defines a picture function from the line segments in the list "vs",
+-- bounded by vectors "m" and "n".
 grid :: Double -> Double -> [Pair] -> Picture
 grid m n vs = f
   where
@@ -35,6 +56,9 @@ grid m n vs = f
           ((adds [(div (mul b x0) m), a, (div (mul c y0) n)]),
            (adds [(div (mul b x1) m), a, (div (mul c y1) n)]))
 
+-- Converts a list of vectors specifying the points in a polygon into a list
+-- of line segments that can be used to draw the polygon, by pairing up the
+-- individual points.
 polygon :: [Vec] -> [Pair]
 polygon vs = zip (last vs : init vs) vs
 
@@ -69,6 +93,12 @@ quartet p1 p2 p3 p4 = above (beside p1 p2) (beside p3 p4)
 cycle :: Picture -> Picture
 cycle p = quartet p (rot (rot (rot p))) (rot p) (rot (rot p))
 
+
+-- ---------------------------------------------------------------------------
+-- Rendering/output functions
+-- ---------------------------------------------------------------------------
+
+-- Returns a string containing the PostScript needed to render the picture "p"
 plot :: Picture -> String
 plot p = header ++ "\n" ++ picture ++ "\n" ++ footer
   where
@@ -82,6 +112,14 @@ plot p = header ++ "\n" ++ picture ++ "\n" ++ footer
         pfunc ((x0,y0), (x1, y1)) =
           printf "%.6f %.6f moveto %.6f %.6f lineto" x0 y0 x1 y1
 
+write p filename = writeFile filename (plot p)
+
+main = write fishes "fishes.ps"
+
+
+-- ---------------------------------------------------------------------------
+-- Premade picture functions
+-- ---------------------------------------------------------------------------
 
 -- a man
 man = grid 14 20 (polygon [(6, 10), (0, 10), (0, 12), (6, 12), (6, 14),
@@ -97,7 +135,7 @@ man_quartet = quartet man man man man
 man_cycle = cycle man
 
 
--- the fish
+-- the building blocks of the Escher fish
 p = grid 16 16
     [((4, 4), (6, 0)), ((0, 3), (3, 4)), ((3, 4), (0, 8)),
      ((0, 8), (0, 3)), ((4, 5), (7, 6)), ((7, 6), (4, 10)),
@@ -153,7 +191,3 @@ corner1 = quartet blank blank blank u
 corner2 = quartet corner1 side1 (rot side1) u
 pseudocorner = quartet corner2 side2 (rot side2) (rot t)
 fishes = cycle pseudocorner
-
-write p filename = writeFile filename (plot p)
-
-main = write fishes "fishes.ps"
