@@ -47,7 +47,7 @@ beside p q = f
     f :: Picture
     f a b c = union (p a bHalf c) (q (add a bHalf) bHalf c)
       where
-        bHalf = c `div` 2
+        bHalf = b `div` 2
 
 above :: Picture -> Picture -> Picture
 above p q = f
@@ -80,7 +80,7 @@ plot p = header ++ "\n" ++ picture ++ "\n" ++ footer
       where
         pfunc :: Pair -> String
         pfunc ((x0,y0), (x1, y1)) =
-          printf "%f %f moveto %f %f lineto" x0 y0 x1 y1
+          printf "%.6f %.6f moveto %.6f %.6f lineto" x0 y0 x1 y1
 
 
 -- a man
