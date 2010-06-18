@@ -43,15 +43,13 @@ subs vs = foldl sub (0, 0) vs
 -- Image function building blocks
 -- ---------------------------------------------------------------------------
 
--- Defines a picture function from the line segments in the list "vs",
+-- Defines a picture function from the line segments (Pairs) in the list "vs",
 -- bounded by vectors "m" and "n".
 grid :: Double -> Double -> [Pair] -> Picture
 grid m n vs = f
   where
-    f :: Picture
     f a b c =
       map g vs where
-        g :: Pair -> Pair
         g ((x0, y0), (x1, y1)) =
           ((adds [(div (mul b x0) m), a, (div (mul c y0) n)]),
            (adds [(div (mul b x1) m), a, (div (mul c y1) n)]))
@@ -68,7 +66,6 @@ blank = \a b c -> []
 beside :: Picture -> Picture -> Picture
 beside p q = f
   where
-    f :: Picture
     f a b c = union (p a bHalf c) (q (add a bHalf) bHalf c)
       where
         bHalf = b `div` 2
@@ -76,7 +73,6 @@ beside p q = f
 above :: Picture -> Picture -> Picture
 above p q = f
   where
-    f :: Picture
     f a b c = union (p (add a cHalf) b cHalf) (q a b cHalf)
       where
         cHalf = c `div` 2
@@ -84,7 +80,6 @@ above p q = f
 rot :: Picture -> Picture
 rot p = f
   where
-    f :: Picture
     f a b c = p (add a b) c (mul b (-1))
 
 quartet :: Picture -> Picture -> Picture -> Picture -> Picture
@@ -108,7 +103,6 @@ plot p = header ++ "\n" ++ picture ++ "\n" ++ footer
     footer = "stroke\nshowpage\n"
     picture = intercalate "\n" (map pfunc (p (0,0) (1,0) (0,1)))
       where
-        pfunc :: Pair -> String
         pfunc ((x0,y0), (x1, y1)) =
           printf "%.6f %.6f moveto %.6f %.6f lineto" x0 y0 x1 y1
 
