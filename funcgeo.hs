@@ -1,3 +1,17 @@
+{- Functional Geometry
+
+Original idea by Peter Henderson, see
+http://www.ecs.soton.ac.uk/~ph/funcgeo.pdf and
+http://www.ecs.soton.ac.uk/~ph/papers/funcgeo2.pdf
+
+Implemented in Lisp by Frank Buß, see
+http://www.frank-buss.de/lisp/functional.html
+
+Ported to Haskell by Will McCutchen <mccutchen@gmail.com>
+
+Note: This is my very first Haskell program, so it's most likely horrible.
+Please don't hold that against me. -}
+
 import Prelude hiding (div, cycle)
 import Data.List (union, intercalate)
 import Text.Printf (printf)

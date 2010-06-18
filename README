@@ -7,11 +7,4 @@ http://www.ecs.soton.ac.uk/~ph/papers/funcgeo2.pdf
 Implemented in Lisp by Frank Buß, see
 http://www.frank-buss.de/lisp/functional.html
 
-Ported to Python by Will McCutchen <mccutchen@gmail.com>
-
-Usage:
-
-    plot(p, [f])
-
-where `p` is a picture function and `f` is a file-like object which defaults
-to sys.stdout.
+Ported to Python and Haskell by Will McCutchen <mccutchen@gmail.com>
