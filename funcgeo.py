@@ -101,6 +101,56 @@ def cycle(p):
     """Returns the given picture duplicated and rotated in a square."""
     return quartet(p, rot(rot(rot(p))), rot(p), rot(rot(p)))
 
+def flip(p):
+   """Flips picture horizontally"""
+   def _(a, b, c):
+       return p(vadd(a, b), vmul(b, -1), c)
+   return _
+
+def rot45(p):
+   """Rotates picture p by 45 degrees."""
+   def _(a, b, c):
+       return p(vadd(a, vdiv(vadd(b, c),2)),
+                vdiv(vadd(b, c),2),
+                vdiv(vadd(c, vmul(b, -1)), 2))
+
+def besidequad(m, n, p, q):
+   """Places picture p beside picture q scaled by m & n."""
+   def _(a, b, c):
+       mnscale = float(m) / (m + n)
+       nmscale = float(n) / (m + n)
+       pv = p(a, vmul(b, mnscale), c)
+       qv = q(vadd(a, vmul(b, mnscale)), vmul(b, nmscale), c)
+       return tuple(set(pv + qv))
+   return _
+
+def abovequad(m, n, p, q):
+   """Places picture p beside picture q scaled by m & n."""
+   def _(a, b, c):
+       mnscale = float(m) / (m + n)
+       nmscale = float(n) / (m + n)
+       pv = p(vadd(a, vmul(c, nmscale)), b, vmul(c, mnscale))
+       qv = q(a, b, vmul(c, nmscale))
+       return tuple(set(pv + qv))
+   return _
+
+def nonet(p, q, r,
+          s, t, u,
+          v, w, x):
+    return abovequad(
+        1, 2,
+        besidequad(
+            1, 2,
+            p, besidequad(1, 1, q, r)),
+        abovequad(
+            1, 1,
+            besidequad(
+                1, 2,
+                s, besidequad(1, 1, t, u)),
+            besidequad(
+                1, 2,
+                v, besidequad(1, 1, w, x))))
+
 def plot(p, f=sys.stdout):
     """Writes the given picture function to the given file as PostScript."""
     def w(*s): print >> f, '\n'.join(s)
