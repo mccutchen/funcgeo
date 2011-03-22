@@ -45,12 +45,15 @@ add (x0, y0) (x1, y1) = (x0 + x1, y0 + y1)
 sub :: Vec -> Vec -> Vec
 sub (x0, y0) (x1, y1) = (x0 - x1, y0 - y1)
 
--- Add and subtract multiple vectors at once
+-- Add and subtract multiple vectors at once. Note to self: As suggested by
+-- `hlint`, these definitions take advantage of (what I think of as) implicit
+-- currying. They each take an implied [Vec] argument, which is automagically
+-- used as the missing final argument to foldl.
 adds :: [Vec] -> Vec
-adds vs = foldl add (0, 0) vs
+adds = foldl add (0, 0)
 
 subs :: [Vec] -> Vec
-subs vs = foldl sub (0, 0) vs
+subs = foldl sub (0, 0)
 
 
 -- ---------------------------------------------------------------------------
@@ -65,8 +68,8 @@ grid m n vs = f
     f a b c =
       map g vs where
         g ((x0, y0), (x1, y1)) =
-          ((adds [(div (mul b x0) m), a, (div (mul c y0) n)]),
-           (adds [(div (mul b x1) m), a, (div (mul c y1) n)]))
+          (adds [div (mul b x0) m, a, div (mul c y0) n],
+           adds [div (mul b x1) m, a, div (mul c y1) n])
 
 -- Converts a list of vectors specifying the points in a polygon into a list
 -- of line segments that can be used to draw the polygon, by pairing up the
@@ -75,19 +78,19 @@ polygon :: [Vec] -> [Pair]
 polygon vs = zip (last vs : init vs) vs
 
 blank :: Picture
-blank = \a b c -> []
+blank a b c = []
 
 beside :: Picture -> Picture -> Picture
 beside p q = f
   where
-    f a b c = union (p a bHalf c) (q (add a bHalf) bHalf c)
+    f a b c = p a bHalf c `union` q (add a bHalf) bHalf c
       where
         bHalf = b `div` 2
 
 above :: Picture -> Picture -> Picture
 above p q = f
   where
-    f a b c = union (p (add a cHalf) b cHalf) (q a b cHalf)
+    f a b c = p (add a cHalf) b cHalf `union` q a b cHalf
       where
         cHalf = c `div` 2
 
@@ -136,11 +139,11 @@ man = grid 14 20 (polygon [(6, 10), (0, 10), (0, 12), (6, 12), (6, 14),
                            (12, 14), (12, 10), (8, 10), (8, 8), (10, 0),
                            (8, 0), (7, 4), (6, 0), (4, 0), (6, 8)])
 
-man_beside_man = beside man man
-man_above_man = above man man
-man_rotated = rot man
-man_quartet = quartet man man man man
-man_cycle = cycle man
+manBesideMan = beside man man
+manAboveMan = above man man
+manRotated = rot man
+manQuartet = quartet man man man man
+manCycle = cycle man
 
 
 -- the building blocks of the Escher fish
